@@ -1,12 +1,30 @@
 import styled from 'styled-components';
+import React, {useEffect} from 'react';
 
-const St = styled.div`
+const Title = styled.div`
   color: red;
 `
 
 const Main = () => {
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.ctrlKey) {
+      if (event.key === 'ArrowUp') {
+
+      } else if (event.key === 'ArrowDown') {
+
+      }
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [])
+
   return (
-    <St>Hello!</St>
+    <Title>Hello!</Title>
   )
 }
 
