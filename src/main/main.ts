@@ -14,6 +14,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { DefaultChannel } from "./channel";
+import { winspoolGetDefaultPrinter } from "win32-api/dist/index.fun";
 
 class AppUpdater {
   constructor() {
@@ -25,11 +27,22 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
+// ipcMain.on('ipc-example', async (event, arg) => {
+//   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+//   console.log(msgTemplate(arg));
+//   event.reply('ipc-example', msgTemplate('pong'));
+// });
+
+ipcMain.on(DefaultChannel, async(event, arg) => {
+  // console.log(arg)
+  // const printerName = await winspoolGetDefaultPrinter()
+  // const hWnd = await user32FindWindowEx(0, 0, 'Notepad', null)
+  // console.log(printerName)
+  const printerName = await winspoolGetDefaultPrinter()
+  
+  // const child = spawn('notepad.exe')
+  // const hWnd = await user32FindWindowEx(0, 0, 'Notepad', null)
+})
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
