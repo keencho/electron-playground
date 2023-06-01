@@ -213,7 +213,11 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "nsis",
+        {
+          "target_name": "binding",
+          "sources": [ "src/binding.cc" ]
+        }
       ]
     },
     "linux": {

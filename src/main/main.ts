@@ -38,7 +38,7 @@ ipcMain.on(DefaultChannel, async(event, arg) => {
   // const printerName = await winspoolGetDefaultPrinter()
   // const hWnd = await user32FindWindowEx(0, 0, 'Notepad', null)
   // console.log(printerName)
-  const printerName = await winspoolGetDefaultPrinter()
+  // const printerName = await winspoolGetDefaultPrinter()
   
   // const child = spawn('notepad.exe')
   // const hWnd = await user32FindWindowEx(0, 0, 'Notepad', null)
