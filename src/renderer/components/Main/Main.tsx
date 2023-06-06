@@ -8,14 +8,12 @@ const Title = styled.div`
 
 const Main = () => {
   
+  const test = () => {
+    window.electron.ipcRenderer.sendMessage(DefaultChannel, ['ping']);
+  }
+  
   const onKeyDown = (event: KeyboardEvent) => {
-    if (event.ctrlKey) {
-      if (event.key === 'ArrowUp') {
-        window.electron.ipcRenderer.sendMessage(DefaultChannel, ['ping']);
-      } else if (event.key === 'ArrowDown') {
-      
-      }
-    }
+    window.electron.ipcRenderer.sendMessage(DefaultChannel, ['ping']);
   }
   
   useEffect(() => {
@@ -25,7 +23,10 @@ const Main = () => {
   }, [])
   
   return (
-    <Title>Hello!</Title>
+    <Title>
+      Hello!
+      <button onClick={test}>버튼</button>
+    </Title>
   )
 }
 

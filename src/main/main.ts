@@ -8,14 +8,15 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
-import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
-import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import path from "path";
+import { app, BrowserWindow, ipcMain, shell } from "electron";
+import { autoUpdater } from "electron-updater";
+import log from "electron-log";
+import MenuBuilder from "./menu";
+import { resolveHtmlPath } from "./util";
 import { DefaultChannel } from "./channel";
-import { winspoolGetDefaultPrinter } from "win32-api/dist/index.fun";
+import * as User32 from "./win32";
+import { GetForegroundWindow, waveOutSetVolume } from "./win32";
 
 class AppUpdater {
   constructor() {
@@ -27,21 +28,26 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-// ipcMain.on('ipc-example', async (event, arg) => {
-//   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-//   console.log(msgTemplate(arg));
-//   event.reply('ipc-example', msgTemplate('pong'));
-// });
-
 ipcMain.on(DefaultChannel, async(event, arg) => {
-  // console.log(arg)
-  // const printerName = await winspoolGetDefaultPrinter()
-  // const hWnd = await user32FindWindowEx(0, 0, 'Notepad', null)
-  // console.log(printerName)
-  // const printerName = await winspoolGetDefaultPrinter()
+  if (!mainWindow) throw new Error('"mainWindow" is not defined');
   
-  // const child = spawn('notepad.exe')
-  // const hWnd = await user32FindWindowEx(0, 0, 'Notepad', null)
+  const ref = User32.FindWindowA('Chrome_WidgetWin_1', 'YouTube Music');
+  
+  if (ref !== 0) {
+    const fw = User32.GetForegroundWindow();
+    
+    if (fw) {
+      const t = User32.GetWindowThreadProcessId(fw, ref);
+      
+      if (t !== 0) {
+        User32.waveOutSetVolume(t, 5);
+      }
+    }
+  }
+  
+  // let ret = User32.MessageBoxA(null, 'Do you want another message box?', 'Koffi', User32.MB_YESNO | User32.MB_ICONQUESTION);
+  // if (ret == User32.IDYES)
+  //   User32.MessageBoxW(null, 'Hello World!', 'Koffi', User32.MB_ICONINFORMATION);
 })
 
 if (process.env.NODE_ENV === 'production') {
