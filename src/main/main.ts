@@ -16,7 +16,7 @@ import MenuBuilder from "./menu";
 import { resolveHtmlPath } from "./util";
 import { DefaultChannel } from "./channel";
 import * as User32 from "./win32";
-import { GetForegroundWindow, waveOutSetVolume } from "./win32";
+import koffi from "koffi";
 
 class AppUpdater {
   constructor() {
@@ -31,19 +31,61 @@ let mainWindow: BrowserWindow | null = null;
 ipcMain.on(DefaultChannel, async(event, arg) => {
   if (!mainWindow) throw new Error('"mainWindow" is not defined');
   
-  const ref = User32.FindWindowA('Chrome_WidgetWin_1', 'YouTube Music');
-  
-  if (ref !== 0) {
-    const fw = User32.GetForegroundWindow();
+  const applicationPath = 'C:\\Program Files\\Naver\\Naver Whale\\Application\\whale_proxy.exe';
+  const args = '--profile-directory="Profile 1" --app-id=cinhimbnkkaeohfgghhklpknlkffjgod'
+
+  for (let hwnd = null;;) {
+    hwnd = User32.FindWindowEx(0, hwnd, 'Chrome_WidgetWin_1', null);
     
-    if (fw) {
-      const t = User32.GetWindowThreadProcessId(fw, ref);
-      
-      if (t !== 0) {
-        User32.waveOutSetVolume(t, 5);
-      }
+    if (!hwnd) {
+      console.log('end')
+      break;
     }
+    
+    // Get PID
+    let pid;
+    {
+      let ptr = [null];
+      let tid = User32.GetWindowThreadProcessId(hwnd, ptr);
+      
+      if (!tid) {
+        // Maybe the process ended in-between?
+        continue;
+      }
+      
+      pid = ptr[0];
+    }
+    
+    // Get window title
+    let title;
+    {
+      let buf = Buffer.allocUnsafe(1024);
+      let length = User32.GetWindowText(hwnd, buf, buf.length);
+      
+      if (!length) {
+        // Maybe the process ended in-between?
+        continue;
+      }
+      
+      title = koffi.decode(buf, 'char', length);
+    }
+    
+    console.log({ PID: pid, Title: title });
   }
+  
+  //
+  // if (ref !== 0) {
+  //   console.log(ref)
+  //   const fw = User32.GetForegroundWindow();
+  //
+  //   if (fw) {
+  //     const t = User32.GetWindowThreadProcessId(fw, ref);
+  //
+  //     if (t !== 0) {
+  //       User32.waveOutSetVolume(t, 5);
+  //     }
+  //   }
+  // }
   
   // let ret = User32.MessageBoxA(null, 'Do you want another message box?', 'Koffi', User32.MB_YESNO | User32.MB_ICONQUESTION);
   // if (ret == User32.IDYES)
