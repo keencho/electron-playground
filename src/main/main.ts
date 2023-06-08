@@ -33,27 +33,12 @@ ipcMain.on(DefaultChannel, async(event, arg) => {
   
   const applicationPath = 'C:\\Program Files\\Naver\\Naver Whale\\Application\\whale_proxy.exe';
   const args = '--profile-directory="Profile 1" --app-id=cinhimbnkkaeohfgghhklpknlkffjgod'
-
+  
   for (let hwnd = null;;) {
     hwnd = User32.FindWindowEx(0, hwnd, 'Chrome_WidgetWin_1', null);
     
     if (!hwnd) {
-      console.log('end')
       break;
-    }
-    
-    // Get PID
-    let pid;
-    {
-      let ptr = [null];
-      let tid = User32.GetWindowThreadProcessId(hwnd, ptr);
-      
-      if (!tid) {
-        // Maybe the process ended in-between?
-        continue;
-      }
-      
-      pid = ptr[0];
     }
     
     // Get window title
@@ -70,26 +55,25 @@ ipcMain.on(DefaultChannel, async(event, arg) => {
       title = koffi.decode(buf, 'char', length);
     }
     
-    console.log({ PID: pid, Title: title });
+    if (title.toLowerCase() === 'YouTube Music'.toLowerCase()) {
+      console.log('dma.')
+      break;
+    }
+    
+    // // Get PID
+    // let pid;
+    // {
+    //   let ptr = [null];
+    //   let tid = User32.GetWindowThreadProcessId(hwnd, ptr);
+    //
+    //   if (!tid) {
+    //     // Maybe the process ended in-between?
+    //     continue;
+    //   }
+    //
+    //   pid = ptr[0];
+    // }
   }
-  
-  //
-  // if (ref !== 0) {
-  //   console.log(ref)
-  //   const fw = User32.GetForegroundWindow();
-  //
-  //   if (fw) {
-  //     const t = User32.GetWindowThreadProcessId(fw, ref);
-  //
-  //     if (t !== 0) {
-  //       User32.waveOutSetVolume(t, 5);
-  //     }
-  //   }
-  // }
-  
-  // let ret = User32.MessageBoxA(null, 'Do you want another message box?', 'Koffi', User32.MB_YESNO | User32.MB_ICONQUESTION);
-  // if (ret == User32.IDYES)
-  //   User32.MessageBoxW(null, 'Hello World!', 'Koffi', User32.MB_ICONINFORMATION);
 })
 
 if (process.env.NODE_ENV === 'production') {
