@@ -55,8 +55,23 @@ ipcMain.on(DefaultChannel, async(event, arg) => {
       title = koffi.decode(buf, 'char', length);
     }
     
-    if (title.toLowerCase() === 'YouTube Music'.toLowerCase()) {
-      console.log('dma.')
+    if (title.toLowerCase().includes('YouTube Music'.toLowerCase())) {
+      console.log(hwnd)
+      const res = User32.ShowWindow(hwnd[0], 9);
+      console.log(res);
+      // const params = {
+      //   'type': 1,
+      //
+      //   'wVK': 0x20,
+      //   'wScan': 0,
+      //   'dwFlags': 0X0000,
+      //
+      //   'time': 0,
+      //   'dwExtraInfo': 0
+      // }
+      //
+      // User32.SendInput(1, params, 40)
+      
       break;
     }
     

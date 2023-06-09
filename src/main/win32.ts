@@ -11,4 +11,22 @@ export const FindWindowEx = User32.func('HWND __stdcall FindWindowExW(HWND hWndP
 export const GetWindowThreadProcessId = User32.func('DWORD __stdcall GetWindowThreadProcessId(HWND hWnd, _Out_ DWORD *lpdwProcessId)');
 export const GetWindowText = User32.func('int __stdcall GetWindowTextA(HWND hWnd, _Out_ uint8_t *lpString, int nMaxCount)');
 
-export const SendInput = User32.func('int __stdcall SendInput(uint8_t cInputs, LPINPUT pInputs, int cbSize)')
+// const InputUnion = koffi.struct('InputUnion', {
+//
+// })
+
+export const Input = koffi.struct('Input', {
+  // 0: MOUSE, 1: KEYBOARD, 2: HARDWARE
+  'type': 'int',
+  
+  'wVK': 'short',
+  'wCScan': 'short',
+  'dwFlags': 'int',
+  
+  'time': 'int',
+  'dwExtraInfo': 'int64'
+})
+
+export const SendInput = User32.func('int __stdcall SendInput(uint8_t cInputs, Input pInputs, int cbSize)')
+
+export const ShowWindow = User32.func('bool __stdcall ShowWindow(HWND hWnd, int nCmdShow)')
